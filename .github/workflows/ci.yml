@@ -14,8 +14,7 @@ on:
       - "docs/**"
       - "README.md"
   push:
-    branches:
-      - master
+    workflow_dispatch
     paths-ignore:
       - ".github/**"
       - "docs/**"
