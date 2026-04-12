@@ -717,20 +717,6 @@ class App: Reactor.Component
                     {!system_error && handler.current_is_wayland() ? <ModifyDefaultLogin /> : ""}
                     {incoming_only ? <ConnectStatus @{this.connect_status} /> : ""}
                 </div>
-                {!incoming_only && <div .right-pane>
-                    <div .right-content>
-                        <div .card-connect>
-                            <div .title>{translate('Control Remote Desktop')}</div>
-                            <ID @{this.remote_id} />
-                            <div .right-buttons>
-                                <button .button .outline #file-transfer>{translate('Transfer file')}</button>
-                                <button .button #connect>{translate('Connect')}</button>
-                            </div>
-                        </div>
-                        <MultipleSessions @{this.multipleSessions} />
-                    </div>
-                    {!outgoing_only ? <ConnectStatus @{this.connect_status} /> : ""}
-                </div>}
                 <div #overlay style="position: absolute;size:*;background:black;opacity:0.5;display:none" />
             </div>; 
     }
@@ -1054,19 +1040,6 @@ class PasswordArea: Reactor.Component {
         var show_password = approve_mode != 'click';
         var has_local_password = handler.is_local_permanent_password_set();
         return <popup><menu.context #edit-password-context>
-            <li #approve-mode-password><span>{svg_checkmark}</span>{translate('Accept sessions via password')}</li>
-            <li #approve-mode-click><span>{svg_checkmark}</span>{translate('Accept sessions via click')}</li>
-            <li #approve-mode-both><span>{svg_checkmark}</span>{translate('Accept sessions via both')}</li>
-            { !show_password ? '' : <div .separator /> }
-            { !show_password ? '' : <li #use-temporary-password><span>{svg_checkmark}</span>{translate('Use one-time password')}</li> }
-            { !show_password ? '' : <li #use-permanent-password><span>{svg_checkmark}</span>{translate('Use permanent password')}</li> }
-            { !show_password ? '' : <li #use-both-passwords><span>{svg_checkmark}</span>{translate('Use both passwords')}</li> }
-            { !show_password ? '' : <div .separator /> }
-            { !show_password || disable_change_permanent_password ? '' : <li #set-password  disabled={ method == 'use-temporary-password' ? "true" : "false" }>{translate('Set permanent password')}</li> }
-            { !show_password || disable_change_permanent_password ? '' : <li #clear-password disabled={ has_local_password ? "false" : "true" }>{translate('Clear permanent password')}</li> }
-            { !show_password ? '' : <TemporaryPasswordLengthMenu /> }
-            <div .separator />
-            <li #tfa><span>{svg_checkmark}</span>{translate('enable-2fa-title')}</li>
         </menu></popup>;
     }
 
