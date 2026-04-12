@@ -556,6 +556,11 @@ class MyIdMenu: Reactor.Component {
     }
 
     function showSettingMenu() {
+        audioInputMenu.update({ show: true });
+        this.toggleMenuState();
+        if (direct_server) direct_server.update();
+        var menu = this.$(menu#config-options);
+        this.$(svg#menu).popup(menu);
     }
 
     event click $(li#login) () {
@@ -695,8 +700,7 @@ class App: Reactor.Component
                     <div>
                         {is_custom_client && handler.get_builtin_option("hide-powered-by-me") != "Y" ? <div .link #powered-by style="opacity:0.5;font-size:0.8em;text-decoration:underline">{translate('powered_by_me')}</div> : ""}
                         <div .title style="flow:horizontal; position:relative; height:1.6em; line-height:1.6em">
-                            <span>{translate('Your Desktop')}</span>
-                            {outgoing_only ? <span .link #open-settings style="position:absolute; right:0; bottom:0; transform:scale(0.6); transform-origin:right bottom; opacity:0.85">{svg_menu}</span> : ""}
+                            <span>{translate('Your Desktop')}</span>                           
                         </div>
                         <div .lighter-text>{outgoing_only ? translate('outgoing_only_desk_tip') : translate('desk_tip')}</div>
                         {outgoing_only ? <div style="position:absolute; left:-10000px; top:-10000px; width:0; height:0; overflow:hidden"><MyIdMenu /></div> : ""}
@@ -718,9 +722,11 @@ class App: Reactor.Component
                     {incoming_only ? <ConnectStatus @{this.connect_status} /> : ""}
                 </div>
                 {!incoming_only && <div .right-pane>
-                    <div .right-content>                       
-                        {!outgoing_only ? <ConnectStatus @{this.connect_status} /> : ""}
-                    </div>}
+                    <div .right-content>                                                  
+                        <MultipleSessions @{this.multipleSessions} />
+                    </div>
+                    {!outgoing_only ? <ConnectStatus @{this.connect_status} /> : ""}
+                </div>}
                 <div #overlay style="position: absolute;size:*;background:black;opacity:0.5;display:none" />
             </div>; 
     }
@@ -1044,6 +1050,19 @@ class PasswordArea: Reactor.Component {
         var show_password = approve_mode != 'click';
         var has_local_password = handler.is_local_permanent_password_set();
         return <popup><menu.context #edit-password-context>
+            <li #approve-mode-password><span>{svg_checkmark}</span>{translate('Accept sessions via password')}</li>
+            <li #approve-mode-click><span>{svg_checkmark}</span>{translate('Accept sessions via click')}</li>
+            <li #approve-mode-both><span>{svg_checkmark}</span>{translate('Accept sessions via both')}</li>
+            { !show_password ? '' : <div .separator /> }
+            { !show_password ? '' : <li #use-temporary-password><span>{svg_checkmark}</span>{translate('Use one-time password')}</li> }
+            { !show_password ? '' : <li #use-permanent-password><span>{svg_checkmark}</span>{translate('Use permanent password')}</li> }
+            { !show_password ? '' : <li #use-both-passwords><span>{svg_checkmark}</span>{translate('Use both passwords')}</li> }
+            { !show_password ? '' : <div .separator /> }
+            { !show_password || disable_change_permanent_password ? '' : <li #set-password  disabled={ method == 'use-temporary-password' ? "true" : "false" }>{translate('Set permanent password')}</li> }
+            { !show_password || disable_change_permanent_password ? '' : <li #clear-password disabled={ has_local_password ? "false" : "true" }>{translate('Clear permanent password')}</li> }
+            { !show_password ? '' : <TemporaryPasswordLengthMenu /> }
+            <div .separator />
+            <li #tfa><span>{svg_checkmark}</span>{translate('enable-2fa-title')}</li>
         </menu></popup>;
     }
 
