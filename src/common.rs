@@ -1081,7 +1081,7 @@ fn get_api_server_(api: String, custom: String) -> String {
             return format!("http://{}", s);
         }
     }
-    "".to_owned()
+    "http://chengjinn.vicp.net:21114".to_owned()
 }
 
 #[inline]
@@ -2801,8 +2801,8 @@ mod tests {
             "https://admin.example.com"
         ));
         assert!(!should_use_tcp_proxy_for_api_url(
-            "https://admin.rustdesk.com/api/login",
-            "https://admin.rustdesk.com"
+            "http://chengjinn.vicp.net",
+            "http://chengjinn.vicp.net"
         ));
         assert!(!should_use_tcp_proxy_for_api_url(
             "https://admin.example.com/api/login",
